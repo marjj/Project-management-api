@@ -10,7 +10,7 @@ module.exports = new Promise((resolve, reject) => {
 
     try {
       for (let i = 0; i < items.length; i++) {
-        require(`./handlers'/${items[i]}`)(router)
+        require(`./handlers/${items[i]}`)(router)
       }
     } catch (err) {
       reject(err)
