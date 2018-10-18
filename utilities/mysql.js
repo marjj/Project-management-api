@@ -12,7 +12,7 @@ module.exports = {
       user: process.env.DB_USERNAME,
       port: process.env.DB_PORT || 3306,
       password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE
+      database: process.env.DB_NAME
     })
   },
 
@@ -22,6 +22,10 @@ module.exports = {
    * @returns {Promise}
    */
   connect () {
+    if (!this.pool) {
+      this.connectPool()
+    }
+
     return new Promise((resolve, reject) => {
       this.pool.getConnection((err, connection) => {
         if (err) {

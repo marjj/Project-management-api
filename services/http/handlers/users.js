@@ -1,4 +1,5 @@
 const router = require('koa-router')()
+const user = require('../../../store/user')
 
 router
   // common middlewares and prefixes here
@@ -6,7 +7,8 @@ router
 
   // add routes here
   .get('/create', async (ctx, next) => {
-    ctx.body = 123
+    ctx.body = user.create({username: 'jodan12'})
+    next()
   })
 
 module.exports = router

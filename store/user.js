@@ -1,4 +1,4 @@
-const store = require('../store')
+const store = require('./index')
 
 module.exports = {
   /**
@@ -8,10 +8,17 @@ module.exports = {
    * @return {Promise<Object>} Promise object
    */
   async create (params) {
-    store..
+    let columns = []
+    let values = []
 
+    for (const key in params) {
+      columns.push(key)
+      values.push(params[key])
+    }
 
-    params.id = id
+    params.id = (await store.mysql.insert('users', columns, [values])).insertId
+
+    await store.cache(`users:${params.id}`, params)
     return params
   },
 
@@ -21,7 +28,7 @@ module.exports = {
    * @param  {Object}  params columns to update
    * @return {Promise<Object>} Promise object
    */
-  async update (params) {
+  async update (params, where) {
 
   }
 }
