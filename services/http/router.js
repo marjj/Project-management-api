@@ -1,8 +1,10 @@
 const fs = require('fs')
-let router = require('koa-router')()
+const koaRouter = require('koa-router')
 
 
 module.exports = new Promise((resolve, reject) => {
+  let router = koaRouter()
+
   fs.readdir(`${__dirname}/handlers/`, (err, items) => {
     if (err) {
       reject(err)
@@ -10,7 +12,7 @@ module.exports = new Promise((resolve, reject) => {
 
     try {
       for (let i = 0; i < items.length; i++) {
-        require(`./handlers/${items[i]}`)(router)
+        router.use(require(`./handlers/${items[i]}`).routes())
       }
     } catch (err) {
       reject(err)

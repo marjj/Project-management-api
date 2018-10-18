@@ -2,11 +2,12 @@ const router = require('koa-router')()
 
 router
   // common middlewares and prefixes here
-  .prefix('/users')
+  .prefix('/sa')
 
   // add routes here
-  .get('/create', async (ctx, next) => {
-    ctx.body = 123
+  .get('/test', async (ctx, next) => {
+    ctx.body = 'sa'
+    next()
   })
 
 module.exports = router

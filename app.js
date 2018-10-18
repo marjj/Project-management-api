@@ -13,6 +13,6 @@ if (cluster.isMaster) {
   }
 } else {
   require('./services')()
-    .then(() => { console.info('Services loaded')})
+    .then(() => { console.info(`Services loaded | PID ${process.pid}`)})
     .catch(console.error)
 }
