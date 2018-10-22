@@ -1,5 +1,5 @@
 const router = require('koa-router')()
-const project = require('../../../store/projects')
+const { project } = require('../../../store/projects')
 
 router
   // common middlewares and prefixes here
