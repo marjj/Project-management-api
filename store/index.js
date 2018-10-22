@@ -5,6 +5,7 @@
  // start connections
 const mysql = require('../utilities/mysql')
 const redis = require('../utilities/redis')
+const mongo = require('../utilities/mongo')
 
 const convert = (obj) => {
   let result = []
@@ -18,15 +19,14 @@ const convert = (obj) => {
 module.exports = {
   mysql,
   redis,
-
+  mongo,
  /**
   * Kick start all connections
   *
   * @return {Void}
   */
   start () {
-    mysql.connect()
-    redis.connect()
+    mongo.connect()
   },
 
   /**

@@ -6,8 +6,26 @@ router
   .prefix('/users')
 
   // add routes here
-  .get('/create', async (ctx, next) => {
-    ctx.body = user.create({username: 'jodan12'})
+  .post('/create', async (ctx, next) => {
+    var body = ctx.request.body
+
+    var u = new user({
+      name: body.fullname,
+      user_name: body.username,
+      authority: body.authority,
+      type: body.type,
+      login: false,
+      password: body.password
+    })
+    var cmd = await u.save()
+    ctx.body = cmd
+    next()
+  })
+
+  .get('/all', async (ctx, next) => {
+    ctx.body = ctx.request.body
+    var u = await user.find({})
+    ctx.body = u
     next()
   })
 

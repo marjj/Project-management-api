@@ -6,7 +6,7 @@ router
 
   // add routes here
   .get('/test', async (ctx, next) => {
-    ctx.body = 'sa'
+    ctx.body = '123'
     next()
   })
 
