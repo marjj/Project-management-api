@@ -18,7 +18,8 @@ var messageSchema = new Schema({
   created_at: String,
   created_by: {type: Schema.Types.ObjectId, ref: 'user'},
   threads: [ { type: Schema.Types.ObjectId, ref: 'thread' } ],
-  deleted: { type: Boolean, default: false }
+  deleted: { type: Boolean, default: false },
+  file: Object
 })
 
 var threadSchema = new Schema({

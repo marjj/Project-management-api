@@ -25,12 +25,13 @@ router
       content: data.content,
       created_at: data.created_at,
       created_by: data.created_by,
+      file: data.file
     })
 
     await query.save()
 
     ctx.body = await message.find( { _id: query._id })
-                            .populate( { path: 'created_by' } )
+                          .populate( { path: 'created_by' } )
     
     next()
   })

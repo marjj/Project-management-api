@@ -22,13 +22,13 @@ router
                                     { $push: { modules:cmd._id } } )
 
     ctx.body = await project.find({_id: data.selected._id})
-                            .populate({
-                              path: 'modules',
-                              populate: { path:'task',
-                                options: { sort: { '_id' : -1 } }
-                              },
-                              options: { sort: { '_id' : -1 } }
-                            })
+                      .populate({
+                        path: 'modules',
+                        populate: { path:'task',
+                          options: { sort: { '_id' : -1 } }
+                        },
+                        options: { sort: { '_id' : -1 } }
+                      })
 
     next()
   })
