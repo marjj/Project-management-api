@@ -1,5 +1,5 @@
 const router = require('koa-router')()
-const { project } = require('../../../store/projects')
+const { project } = require('../../../store/project')
 
 router
   // common middlewares and prefixes here
@@ -7,7 +7,6 @@ router
 
   // add routes here
   .post('/create', async (ctx, next) => {
-    console.log(ctx.request.body);
     var data = ctx.request.body
 
     var proj = new project({
@@ -22,7 +21,7 @@ router
     var cmd = await proj.save()
 
     if(cmd) {
-      ctx.body = await project.find({})
+      ctx.body = proj
     }
     next()
   })
@@ -30,7 +29,14 @@ router
   .get('/all', async (ctx, next) => {
     ctx.body = []
 
-    var proj = await project.find({})
+    var proj = await project.find( {}, null, { sort: { '_id': -1 } } )
+                    .populate({ path: 'modules',
+                      options: { sort : {'_id': -1}, },
+                      populate: { path:'task',
+                        options: { sort: { '_id' : -1 } }
+                      }
+                    })
+
     ctx.body = proj
 
     next()

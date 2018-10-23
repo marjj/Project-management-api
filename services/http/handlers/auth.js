@@ -1,5 +1,5 @@
 const router = require('koa-router')()
-const user = require('../../../store/user')
+const { user } = require('../../../store/user')
 
 router
   // common middlewares and prefixes here
