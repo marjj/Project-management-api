@@ -24,7 +24,9 @@ router
     ctx.body = await project.find({_id: data.selected._id})
                       .populate({
                         path: 'modules',
-                        populate: { path:'task',
+                        populate: { 
+                          path:'task',
+                          populate: [{path: 'created_by'}, {path: 'done_by'}],
                           options: { sort: { '_id' : -1 } }
                         },
                         options: { sort: { '_id' : -1 } }

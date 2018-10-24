@@ -26,6 +26,7 @@ router
 
     ctx.body = await modules.find( { _id: ta.module } )
                             .populate( { path: 'task' ,
+                                         populate: [{path: 'created_by'}, {path: 'done_by'}],
                                          options: { sort: { '_id': -1 } }
                                       } )
 
@@ -39,7 +40,12 @@ router
     var query = await task.updateMany({ _id: request._id }, 
       { $set: {'done': true, done_by: request.done_by } })
 
-    ctx.body = query
+    ctx.body = await modules.find({ _id: request.module })
+                  .populate( {
+                      path: 'task',
+                      populate: [{path: 'created_by'}, {path: 'done_by'}]
+                    }
+                  )
 
     next()
   })

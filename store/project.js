@@ -7,7 +7,7 @@ var projectSchema = new Schema({
   name: String,
   deadline: String, 
   start_date: String,
-  created_by: String,
+  created_by: { type: Schema.Types.ObjectId, ref: 'user' },
   created_at: String,
   user_group: Array,
   deleted: { type: Boolean, default: false},
@@ -18,7 +18,7 @@ var moduleSchema = new Schema({
   project: { type: Schema.Types.ObjectId, ref: 'project' },
   name: String,
   user_group: Array,
-  created_by: String,
+  created_by: { type: Schema.Types.ObjectId, ref: 'user' },
   created_at: String,
   deleted: { type: Boolean, default: false},
   task: [{ type: Schema.Types.ObjectId, ref: 'task' }]
@@ -32,11 +32,11 @@ var taskSchema = new Schema({
   deadline: String,
   start_date: String,
   created_at: String,
-  created_by: String,
+  created_by: { type: Schema.Types.ObjectId, ref: 'user' },
   finishdate: { type: String, default: ''},
   done: { type: Boolean, default: false},
   deleted: { type: Boolean, default: false},
-  done_by: String
+  done_by: { type: Schema.Types.ObjectId, ref: 'user' }
 })
 
 
