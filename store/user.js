@@ -9,7 +9,8 @@ var user = new Schema({
   authority: Number,
   type: String, 
   login: Boolean,
-  password: String
+  password: String,
+  deleted: Boolean
 })
 
 var messageSchema = new Schema({

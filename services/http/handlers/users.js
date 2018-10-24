@@ -1,4 +1,5 @@
 const router = require('koa-router')()
+const bcrypt = require('bcrypt-nodejs')
 const { user } = require('../../../store/user')
 
 router
@@ -9,22 +10,27 @@ router
   .post('/create', async (ctx, next) => {
     var body = ctx.request.body
 
+    var hash = bcrypt.hashSync(body.password);
+
     var u = new user({
       name: body.fullname,
       user_name: body.username,
       authority: body.authority,
       type: body.type,
       login: false,
-      password: body.password
+      password: hash
     })
+    
     var cmd = await u.save()
-    ctx.body = cmd
+    
+    ctx.body = u
+
     next()
   })
 
   .get('/all', async (ctx, next) => {
     ctx.body = ctx.request.body
-    var u = await user.find({})
+    var u = await user.find( {}, null, {sort: {'_id': - 1} } )
     ctx.body = u
     next()
   })

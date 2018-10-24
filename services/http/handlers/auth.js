@@ -1,4 +1,5 @@
 const router = require('koa-router')()
+const bcrypt = require('bcrypt-nodejs')
 const { user } = require('../../../store/user')
 
 router
@@ -10,7 +11,9 @@ router
     ctx.body = 'error'
     var u = await user.find({_id: body.user._id})
 
-    if(u.length && u[0].password !== body.password) {
+    var compare = bcrypt.compareSync(body.password, u[0].password); // true
+
+    if(u.length && !compare) {
       next()
       return 
     }
