@@ -22,15 +22,50 @@ router
                                     { $push: { modules:cmd._id } } )
 
     ctx.body = await project.find({_id: data.selected._id})
-                      .populate({
-                        path: 'modules',
-                        populate: { 
-                          path:'task',
-                          populate: [{path: 'created_by'}, {path: 'done_by'}],
-                          options: { sort: { '_id' : -1 } }
-                        },
-                        options: { sort: { '_id' : -1 } }
-                      })
+      .populate( {
+        path: 'modules',
+        options: {
+          sort: { _id: -1 },
+          where: { deleted: false } 
+        },
+        populate: { 
+          path:'task',
+          options: {
+            sort:{ '_id' : -1 } }
+          },
+          populate: [
+            {
+              path: 'created_by'
+            },
+            {
+              path: 'done_by'
+            }
+          ]
+      } )
+
+    next()
+  })
+
+  .post('/update', async (ctx, next) => {
+
+    var data = ctx.request.body
+
+    await modules.updateOne({_id: data._id}, {$set: {name: data.name } } )
+    
+    ctx.body = data
+
+    next()
+  })
+
+  .post('/delete', async (ctx, next) => {
+    
+    var data = ctx.request.body
+
+    let response = await modules.updateOne({_id: data._id}, {$set: {deleted: true } } )
+
+    let request = await modules.findOne({_id: data._id})
+
+    ctx.body = request
 
     next()
   })

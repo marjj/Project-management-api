@@ -1,18 +1,35 @@
 const router = require('koa-router')()
-const { message, thread, sub_thread } = require('../../../store/user')
+const { message, thread, sub_thread } = require('../../../store/freeboard')
 
 var _populate_sub_threads = [ { path:'created_by'} ] 
-var _popupate_threads = [ { path:'created_by' },
-                        { path:'sub_threads', populate: _populate_sub_threads, options: {sort: {'_id' : -1}} } ] 
-var _popupate_message = [ { path:'created_by' },
-                        { path:'threads' , populate: _popupate_threads, options: {sort: {'_id' : -1}} } ];
+var _popupate_threads = [
+  {
+    path:'created_by'
+  },
+  {
+    path:'sub_threads', 
+    populate: _populate_sub_threads,
+    options: { sort: { 'created_at' : -1 } }
+  }
+]
+
+var _popupate_message = [
+  {
+    path:'created_by'
+  },
+  {
+    path:'threads',
+    populate: _popupate_threads,
+    options: { sort: {'created_at' : -1 } }
+  }
+];
 
 router
   .prefix('/message')
   
   .get('/all', async (ctx, next) => {
 
-    ctx.body = await message.find({}, null, {sort: {'_id' : -1 } } )
+    ctx.body = await message.find({}, null, {sort: {'created_at' : -1 } } )
                .populate(_popupate_message)
     next()
   })
@@ -23,7 +40,6 @@ router
     var query = new message({
       subject: data.subject,
       content: data.content,
-      created_at: data.created_at,
       created_by: data.created_by,
       file: data.file
     })
@@ -42,7 +58,6 @@ router
     var query = new thread({
       content: data.content,
       message: data.message,
-      created_at: data.created_at,
       created_by: data.created_by,
       deleted: false
     })
@@ -52,7 +67,7 @@ router
     await message.updateMany( { _id: query.message },
                                     { $push: { threads: query._id } } )
 
-    let result = await message.find( { _id: query.message }, null, {sort: {'_id' : -1 } } )
+    let result = await message.find( { _id: query.message }, null, {sort: {'created_at' : -1 } } )
                .populate(_popupate_message)
 
     ctx.body = result
@@ -66,7 +81,6 @@ router
     var query = new sub_thread({
       content: data.content,
       created_by: data.created_by,
-      created_at: data.created_at,
       thread: data.thread
     })
 

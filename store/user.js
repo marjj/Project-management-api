@@ -10,39 +10,11 @@ var user = new Schema({
   type: String, 
   login: Boolean,
   password: String,
-  deleted: Boolean
-})
-
-var messageSchema = new Schema({
-  subject: String,
-  content: String,
-  created_at: String,
-  created_by: {type: Schema.Types.ObjectId, ref: 'user'},
-  threads: [ { type: Schema.Types.ObjectId, ref: 'thread' } ],
+  avatar: { type: String, default: '' },
   deleted: { type: Boolean, default: false },
-  file: Object
-})
-
-var threadSchema = new Schema({
-  content: String,
-  created_at: String,
-  message: {type: Schema.Types.ObjectId, ref: 'message'},
-  created_by: {type: Schema.Types.ObjectId, ref: 'user'},
-  sub_threads: [ { type: Schema.Types.ObjectId, ref: 'sub_thread' } ],
-  deleted: { type: Boolean, default: false }
-})
-
-var sub_threadSchema = new Schema({
-  content: String,
-  created_at: String,
-  created_by: {type: Schema.Types.ObjectId, ref: 'user'},
-  thread: { type: Schema.Types.ObjectId, ref: 'thread' },
-  deleted: { type: Boolean, default: false }
+  created_at: {type: Date, default: Date.now }
 })
 
 var user = mongoose.model('user', user)
-var message = mongoose.model('message', messageSchema)
-var thread = mongoose.model('thread', threadSchema)
-var sub_thread = mongoose.model('sub_thread', sub_threadSchema)
 
-module.exports = {user, message, thread, sub_thread }
+module.exports = { user }

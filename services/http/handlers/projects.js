@@ -30,13 +30,31 @@ router
     ctx.body = []
 
     var proj = await project.find( {}, null, { sort: { '_id': -1 } } )
-                    .populate([{ path: 'modules',
-                      options: { sort : {'_id': -1}, },
-                      populate: { path:'task',
-                        populate: [{path: 'created_by'}, {path: 'done_by'}],
-                        options: { sort: { '_id' : -1 } }
-                      }
-                    }, { path: 'created_by' } ] )
+      .populate([
+        { path: 'created_by' },
+        {
+          path: 'modules',
+          options: {
+            sort : {_id: -1},
+            where: {deleted: false }
+          },
+          populate: {
+            path: 'task',
+            options: {
+              sort: { _id : -1 },
+              where: { deleted : false },
+            },
+            populate: [
+              {
+                path: 'created_by'
+              },
+              { 
+                path: 'done_by'
+              }
+            ]
+          }
+        }
+      ])
 
     ctx.body = proj
 
@@ -49,7 +67,7 @@ router
     var query = await project.updateOne( { _id: data.project._id },
                                     { $set: { user_group: data.users } })
 
-    ctx.body = query
+    ctx.body = await project.find( { _id: data.project._id } )
 
     next()
   })
