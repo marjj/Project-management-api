@@ -25,11 +25,16 @@ router
                             } )
 
     ctx.body = await modules.find( { _id: ta.module } )
-                            .populate( { path: 'task' ,
-                                         populate: [{path: 'created_by'},
-                                            {path: 'done_by'}],
-                                         options: { sort: { '_id': -1 } }
-                                      } )
+      .populate( {
+        path: 'task' ,
+        populate: [ {
+            path: 'created_by'
+          }, {
+            path: 'done_by'
+          }
+        ],
+        options: { sort: { 'created_at': -1 } } 
+      } )
 
     next()
   })
@@ -38,13 +43,20 @@ router
 
     var request = ctx.request.body
 
-    var query = await task.updateMany({ _id: request._id }, 
-      { $set: {'done': true, done_by: request.done_by } })
+    var query = ''
+
+    if(request.type === 'all') {
+      query = await task.updateMany({ module: request.module._id }, 
+        { $set: {'done': true, done_by: request.done_by, finishdate: request.finishdate } })
+    } else {
+      query = await task.updateMany({ _id: request._id }, 
+        { $set: {'done': true, done_by: request.done_by, finishdate: request.finishdate } })
+    }
 
     ctx.body = await modules.find({ _id: request.module })
                   .populate( {
                       path: 'task',
-                      options: { sort: { '_id': -1 } },
+                      options: { sort: {created_at: -1 } },
                       populate: [{path: 'created_by'}, {path: 'done_by'}]
                     }
                   )

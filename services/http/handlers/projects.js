@@ -29,19 +29,19 @@ router
   .get('/all', async (ctx, next) => {
     ctx.body = []
 
-    var proj = await project.find( {}, null, { sort: { '_id': -1 } } )
+    var proj = await project.find( {}, null, { sort: { created_at: -1 } } )
       .populate([
         { path: 'created_by' },
         {
           path: 'modules',
           options: {
-            sort : {_id: -1},
+            sort : {created_at: -1},
             where: {deleted: false }
           },
           populate: {
             path: 'task',
             options: {
-              sort: { _id : -1 },
+              sort: { created_at : -1 },
               where: { deleted : false },
             },
             populate: [

@@ -7,21 +7,30 @@ router
   .prefix('/auth')
 
   .post('/login', async (ctx, next) => {
-    var body = ctx.request.body
-    ctx.body = 'error'
-    var u = await user.find({_id: body.user._id})
+    var data = ctx.request.body
+    ctx.body = data
+    var request = await user.findOne({_id: data.user._id})
 
-    var compare = bcrypt.compareSync(body.password, u[0].password); // true
+    var compare = bcrypt.compareSync(data.password, request.password); // true
 
-    if(u.length && !compare) {
-      next()
-      return 
+    if(Object.keys(request).length) {
+
+      if(!compare) {
+        ctx.body = 'wrong password'
+        return 
+      }
+
+      if(request.login) {
+        ctx.body = 'Already logged in'  
+        return 
+      }
+
     }
 
-    user.updateMany({}, {$set: {login: false} }, {multi: true})
-    var check = await user.updateOne({_id : body.user._id}, {$set: {login: true} }) 
-    if(check.nModified) {
-      ctx.body = 'success'
+    var query = await user.updateOne({_id : data.user._id}, {$set: {login: true} }) 
+
+    if(query.ok) {
+      ctx.body = await user.findOne( {_id : data.user._id } )
     }
     next()
   })
@@ -29,8 +38,8 @@ router
   .post('/logout', async (ctx, next) => {
     ctx.body = 'error'
 
-    var check = await user.updateMany({}, {login: false}, {multi: true})
-    if(check.nModified) {
+    var query = await user.updateMany({}, {login: false}, {multi: true})
+    if(query.ok) {
       ctx.body = 'success'
     }
     next()

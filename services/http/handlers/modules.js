@@ -25,14 +25,11 @@ router
       .populate( {
         path: 'modules',
         options: {
-          sort: { _id: -1 },
+          sort: { created_at: -1 },
           where: { deleted: false } 
         },
         populate: { 
           path:'task',
-          options: {
-            sort:{ '_id' : -1 } }
-          },
           populate: [
             {
               path: 'created_by'
@@ -40,7 +37,10 @@ router
             {
               path: 'done_by'
             }
-          ]
+          ],
+          options: {
+            sort:{ 'created_at' : -1 } }
+          }
       } )
 
     next()
@@ -50,9 +50,14 @@ router
 
     var data = ctx.request.body
 
-    await modules.updateOne({_id: data._id}, {$set: {name: data.name } } )
+    var query = ''
+    if(data.users !== undefined ) {
+      query = await modules.updateOne({_id: data.module._id}, {$set: {user_group: data.users } } )
+    } else {
+      query = await modules.updateOne({_id: data._id}, {$set: {name: data.name } } )
+    }
     
-    ctx.body = data
+    ctx.body = query
 
     next()
   })
